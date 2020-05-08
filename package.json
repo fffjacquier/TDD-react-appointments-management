@@ -4,7 +4,8 @@
   "description": "appointments system",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "build": "webpack",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
