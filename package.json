@@ -1,0 +1,18 @@
+{
+  "name": "appointments",
+  "version": "1.0.0",
+  "description": "appointments system",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fffjacquier/appointments.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
+}
