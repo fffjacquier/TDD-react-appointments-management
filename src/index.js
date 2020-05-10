@@ -1,9 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AppointmentsDayView } from './Appointment'
-import { sample } from './data'
+import { AppointmentForm } from './AppointmentForm'
+import { AppointmentsDayView } from './AppointmentsDayView'
+import { CustomerForm } from './CustomerForm'
+import { sampleAvailableTimeSlots } from './data'
 
 ReactDOM.render(
-  <AppointmentsDayView appointments={sample} />,
+  <AppointmentForm availableTimeslots={sampleAvailableTimeSlots} />,
   document.getElementById('root')
 )
