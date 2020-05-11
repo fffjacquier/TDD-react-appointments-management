@@ -7,13 +7,13 @@ const appointmentTimeOfDay = (startsAt) => {
 
 export const Appointment = ({
   customer,
-  stylist,
   service,
+  stylist,
   notes,
   startsAt,
 }) => (
   <div id="appointmentView">
-    <h3>Today's appointment at {appointmentTimeOfDay(startsAt)}</h3>
+    <h3>Today&rsquo;s appointment at {appointmentTimeOfDay(startsAt)}</h3>
     <table>
       <tbody>
         <tr>
@@ -49,18 +49,22 @@ export const AppointmentsDayView = ({ appointments }) => {
   return (
     <div id="appointmentsDayView">
       <ol>
-        {appointments.map((a, i) => (
-          <li key={a.startsAt}>
-            <button type="button" onClick={(e) => setSelectedAppointment(i)}>
-              {appointmentTimeOfDay(a.startsAt)}
+        {appointments.map((appointment, i) => (
+          <li key={appointment.startsAt}>
+            <button
+              className={i === selectedAppointment ? 'toggled' : ''}
+              type="button"
+              onClick={() => setSelectedAppointment(i)}
+            >
+              {appointmentTimeOfDay(appointment.startsAt)}
             </button>
           </li>
         ))}
       </ol>
-      {appointments.length ? (
-        <Appointment {...appointments[selectedAppointment]} />
+      {appointments.length === 0 ? (
+        <p>There are no appointments scheduled for today.</p>
       ) : (
-        <p>No appointments today.</p>
+        <Appointment {...appointments[selectedAppointment]} />
       )}
     </div>
   )
