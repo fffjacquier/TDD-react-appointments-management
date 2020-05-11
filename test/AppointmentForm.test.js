@@ -13,6 +13,8 @@ describe('AppointmentForm', () => {
   const form = (id) => container.querySelector(`form[id="${id}"]`)
   const field = (name) => form('appointment').elements[name]
   const labelFor = (elt) => container.querySelector(`label[for="${elt}"]`)
+  const startsAtField = (index) =>
+    container.querySelectorAll(`input[name="startsAt"]`)[index]
   const findOption = (select, text) => {
     const options = Array.from(select.childNodes)
     return options.find((option) => option.textContent === text)
@@ -21,6 +23,12 @@ describe('AppointmentForm', () => {
   it('renders a form', () => {
     render(<AppointmentForm />)
     expect(form('appointment')).not.toBeNull()
+  })
+
+  it('has a submit button', () => {
+    render(<AppointmentForm />)
+    const submitButton = container.querySelector('input[type="submit"]')
+    expect(submitButton).toBeDefined()
   })
 
   describe('service field', () => {
@@ -89,11 +97,8 @@ describe('AppointmentForm', () => {
     })
   })
 
+  const timeslotTable = () => container.querySelector('table#timeslots')
   describe('time slot table', () => {
-    const timeslotTable = () => container.querySelector('table#timeslots')
-    const startsAtField = (index) =>
-      container.querySelectorAll(`input[name="startsAt"]`)[index]
-
     it('renders a table for time slots', () => {
       render(<AppointmentForm />)
       expect(timeslotTable()).not.toBeNull()

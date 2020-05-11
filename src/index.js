@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import 'whatwg-fetch'
+
 import { AppointmentForm } from './AppointmentForm'
 import { AppointmentsDayView } from './AppointmentsDayView'
 import { CustomerForm } from './CustomerForm'

@@ -26,7 +26,8 @@
     "@babel/runtime": "^7.9.6",
     "faker": "^4.1.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "whatwg-fetch": "^3.0.0"
   },
   "babel": {
     "presets": [
