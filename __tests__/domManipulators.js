@@ -24,6 +24,7 @@ export const createContainer = () => {
   const children = (element) => Array.from(element.childNodes)
 
   return {
+    blur: simulateEvent('blur'),
     renderAndWait: async (component) =>
       await act(async () => ReactDOM.render(component, container)),
     render: (component) =>

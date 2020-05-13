@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "jest --watchAll",
+    "test": "jest",
     "build-server": "webpack --config webpack-server.config.js",
     "test-server": "jest --config server/jest.json",
     "serve": "node dist/server/server.js"
@@ -53,6 +53,14 @@
     ],
     "plugins": [
       "@babel/transform-runtime"
+    ]
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/server",
+      "<rootDir>/__tests__/domManipulators.js",
+      "<rootDir>/__tests__/shallowHelpers.js",
+      "<rootDir>/__tests__/spyHelpers.js"
     ]
   }
 }
