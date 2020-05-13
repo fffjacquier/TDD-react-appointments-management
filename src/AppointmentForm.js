@@ -1,53 +1,59 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react';
 
-const Error = () => <div className="error">An error occurred during save.</div>
+const Error = () => (
+  <div className="error">An error occurred during save.</div>
+);
 
 const timeIncrements = (numTimes, startTime, increment) =>
   Array(numTimes)
     .fill([startTime])
-    .reduce((acc, _, i) => acc.concat([startTime + i * increment]))
+    .reduce((acc, _, i) =>
+      acc.concat([startTime + i * increment])
+    );
 
 const dailyTimeSlots = (salonOpensAt, salonClosesAt) => {
-  const totalSlots = (salonClosesAt - salonOpensAt) * 2
-  const startTime = new Date().setHours(salonOpensAt, 0, 0, 0)
-  const increment = 30 * 60 * 1000
-  return timeIncrements(totalSlots, startTime, increment)
-}
+  const totalSlots = (salonClosesAt - salonOpensAt) * 2;
+  const startTime = new Date().setHours(salonOpensAt, 0, 0, 0);
+  const increment = 30 * 60 * 1000;
+  return timeIncrements(totalSlots, startTime, increment);
+};
 
-const weeklyDateValues = (startDate) => {
-  const midnight = new Date(startDate).setHours(0, 0, 0, 0)
-  const increment = 24 * 60 * 60 * 1000
-  return timeIncrements(7, midnight, increment)
-}
+const weeklyDateValues = startDate => {
+  const midnight = new Date(startDate).setHours(0, 0, 0, 0);
+  const increment = 24 * 60 * 60 * 1000;
+  return timeIncrements(7, midnight, increment);
+};
 
-const toShortDate = (timestamp) => {
-  const [day, , dayOfMonth] = new Date(timestamp).toDateString().split(' ')
-  return `${day} ${dayOfMonth}`
-}
+const toShortDate = timestamp => {
+  const [day, , dayOfMonth] = new Date(timestamp)
+    .toDateString()
+    .split(' ');
+  return `${day} ${dayOfMonth}`;
+};
 
-const toTimeValue = (timestamp) =>
-  new Date(timestamp).toTimeString().substring(0, 5)
+const toTimeValue = timestamp =>
+  new Date(timestamp).toTimeString().substring(0, 5);
 
 const mergeDateAndTime = (date, timeSlot) => {
-  const time = new Date(timeSlot)
+  const time = new Date(timeSlot);
   return new Date(date).setHours(
     time.getHours(),
     time.getMinutes(),
     time.getSeconds(),
     time.getMilliseconds()
-  )
-}
+  );
+};
 
 const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
   timeSlot,
   checkedTimeSlot,
-  handleChange,
+  handleChange
 }) => {
-  const startsAt = mergeDateAndTime(date, timeSlot)
-  if (availableTimeSlots.some((a) => a.startsAt === startsAt)) {
-    const isChecked = startsAt === checkedTimeSlot
+  const startsAt = mergeDateAndTime(date, timeSlot);
+  if (availableTimeSlots.some(a => a.startsAt === startsAt)) {
+    const isChecked = startsAt === checkedTimeSlot;
     return (
       <input
         name="startsAt"
@@ -56,10 +62,10 @@ const RadioButtonIfAvailable = ({
         checked={isChecked}
         onChange={handleChange}
       />
-    )
+    );
   }
-  return null
-}
+  return null;
+};
 
 const TimeSlotTable = ({
   salonOpensAt,
@@ -67,25 +73,25 @@ const TimeSlotTable = ({
   today,
   availableTimeSlots,
   checkedTimeSlot,
-  handleChange,
+  handleChange
 }) => {
-  const dates = weeklyDateValues(today)
-  const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt)
+  const dates = weeklyDateValues(today);
+  const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   return (
     <table id="time-slots">
       <thead>
         <tr>
           <th />
-          {dates.map((d) => (
+          {dates.map(d => (
             <th key={d}>{toShortDate(d)}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {timeSlots.map((timeSlot) => (
+        {timeSlots.map(timeSlot => (
           <tr key={timeSlot}>
             <th>{toTimeValue(timeSlot)}</th>
-            {dates.map((date) => (
+            {dates.map(date => (
               <td key={date}>
                 <RadioButtonIfAvailable
                   availableTimeSlots={availableTimeSlots}
@@ -100,11 +106,10 @@ const TimeSlotTable = ({
         ))}
       </tbody>
     </table>
-  )
-}
+  );
+};
 
 export const AppointmentForm = ({
-  customer,
   selectableServices,
   service,
   selectableStylists,
@@ -116,58 +121,59 @@ export const AppointmentForm = ({
   today,
   availableTimeSlots,
   startsAt,
+  customer
 }) => {
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const [appointment, setAppointment] = useState({
     service,
     startsAt,
-    stylist,
-  })
+    stylist
+  });
 
   const handleSelectBoxChange = ({ target: { value, name } }) =>
-    setAppointment((appointment) => ({
+    setAppointment(appointment => ({
       ...appointment,
-      [name]: value,
-    }))
+      [name]: value
+    }));
 
   const handleStartsAtChange = useCallback(
     ({ target: { value } }) =>
-      setAppointment((appointment) => ({
+      setAppointment(appointment => ({
         ...appointment,
-        startsAt: parseInt(value),
+        startsAt: parseInt(value)
       })),
     []
-  )
+  );
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async e => {
+    e.preventDefault();
     const result = await window.fetch('/appointments', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...appointment,
-        customer: customer.id,
-      }),
-    })
+        customer: customer.id
+      })
+    });
     if (result.ok) {
-      setError(false)
-      onSave()
+      setError(false);
+      onSave();
     } else {
-      setError(true)
+      setError(true);
     }
-  }
+  };
 
   const stylistsForService = appointment.service
     ? serviceStylists[appointment.service]
-    : selectableStylists
+    : selectableStylists;
 
   const timeSlotsForStylist = appointment.stylist
-    ? availableTimeSlots.filter((slot) =>
+    ? availableTimeSlots.filter(slot =>
         slot.stylists.includes(appointment.stylist)
       )
-    : availableTimeSlots
+    : availableTimeSlots;
 
   return (
     <form id="appointment" onSubmit={handleSubmit}>
@@ -177,10 +183,9 @@ export const AppointmentForm = ({
         name="service"
         id="service"
         value={service}
-        onChange={handleSelectBoxChange}
-      >
+        onChange={handleSelectBoxChange}>
         <option />
-        {selectableServices.map((s) => (
+        {selectableServices.map(s => (
           <option key={s}>{s}</option>
         ))}
       </select>
@@ -190,10 +195,9 @@ export const AppointmentForm = ({
         name="stylist"
         id="stylist"
         value={stylist}
-        onChange={handleSelectBoxChange}
-      >
+        onChange={handleSelectBoxChange}>
         <option />
-        {stylistsForService.map((s) => (
+        {stylistsForService.map(s => (
           <option key={s}>{s}</option>
         ))}
       </select>
@@ -209,8 +213,8 @@ export const AppointmentForm = ({
 
       <input type="submit" value="Add" />
     </form>
-  )
-}
+  );
+};
 
 AppointmentForm.defaultProps = {
   availableTimeSlots: [],
@@ -223,7 +227,7 @@ AppointmentForm.defaultProps = {
     'Cut & color',
     'Beard trim',
     'Cut & beard trim',
-    'Extensions',
+    'Extensions'
   ],
   selectableStylists: ['Ashley', 'Jo', 'Pat', 'Sam'],
   serviceStylists: {
@@ -232,7 +236,7 @@ AppointmentForm.defaultProps = {
     'Cut & color': ['Ashley', 'Jo'],
     'Beard trim': ['Pat', 'Sam'],
     'Cut & beard trim': ['Pat', 'Sam'],
-    Extensions: ['Ashley', 'Pat'],
+    Extensions: ['Ashley', 'Pat']
   },
-  onSave: () => {},
-}
+  onSave: () => {}
+};

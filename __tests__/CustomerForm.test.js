@@ -40,14 +40,14 @@ describe('CustomerForm', () => {
   const submitButton = () => element('input[type="submit"]')
 
   it('renders a form', () => {
-    render(<CustomerForm />)
+    render(<CustomerForm {...validCustomer} />)
     expect(form('customer')).not.toBeNull()
   })
 
   describe('submit button', () => {
     it('has a submit button', () => {
-      render(<CustomerForm />)
-      expect(submitButton).not.toBeNull()
+      render(<CustomerForm {...validCustomer} />)
+      expect(submitButton()).not.toBeNull()
     })
 
     it('disables the submit button when submitting', async () => {
@@ -65,9 +65,9 @@ describe('CustomerForm', () => {
       expect(submitButton().disabled).toBeFalsy()
     })
   })
+
   it('calls fetch with the right properties when submitting data', async () => {
     render(<CustomerForm {...validCustomer} />)
-
     await submit(form('customer'))
     expect(window.fetch).toHaveBeenCalledWith(
       '/customers',
@@ -132,8 +132,9 @@ describe('CustomerForm', () => {
     expect(element('.error')).toBeNull()
   })
 
-  it('does not submit the form when they are validation errors', async () => {
+  it('does not submit the form when there are validation errors', async () => {
     render(<CustomerForm />)
+
     await submit(form('customer'))
     expect(window.fetch).not.toHaveBeenCalled()
   })
@@ -144,6 +145,7 @@ describe('CustomerForm', () => {
     expect(window.fetch).not.toHaveBeenCalled()
     expect(element('.error')).not.toBeNull()
   })
+
   it('renders field validation errors from server', async () => {
     const errors = {
       phoneNumber: 'Phone number already exists in the system',
@@ -153,6 +155,7 @@ describe('CustomerForm', () => {
     await submit(form('customer'))
     expect(element('.error').textContent).toMatch(errors.phoneNumber)
   })
+
   describe('submitting indicator', () => {
     it('displays indicator when form is submitting', async () => {
       render(<CustomerForm {...validCustomer} />)
@@ -184,26 +187,26 @@ describe('CustomerForm', () => {
 
   const itRendersAsATextBox = (fieldName) =>
     it('renders as a text box', () => {
-      render(<CustomerForm />)
+      render(<CustomerForm {...validCustomer} />)
       expectToBeInputFieldOfTypeText(field('customer', fieldName))
     })
 
   const itIncludesTheExistingValue = (fieldName) =>
     it('includes the existing value', () => {
-      render(<CustomerForm {...{ [fieldName]: 'value' }} />)
+      render(<CustomerForm {...validCustomer} {...{ [fieldName]: 'value' }} />)
       expect(field('customer', fieldName).value).toEqual('value')
     })
 
   const itRendersALabel = (fieldName, text) =>
     it('renders a label', () => {
-      render(<CustomerForm />)
+      render(<CustomerForm {...validCustomer} />)
       expect(labelFor(fieldName)).not.toBeNull()
       expect(labelFor(fieldName).textContent).toEqual(text)
     })
 
   const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
     it('assigns an id that matches the label id', () => {
-      render(<CustomerForm />)
+      render(<CustomerForm {...validCustomer} />)
       expect(field('customer', fieldName).id).toEqual(fieldName)
     })
 
@@ -264,7 +267,7 @@ describe('CustomerForm', () => {
   describe('validation', () => {
     const itInvalidatesFieldWithValue = (fieldName, value, description) => {
       it(`displays error after blur when ${fieldName} field is '${value}'`, () => {
-        render(<CustomerForm />)
+        render(<CustomerForm {...validCustomer} />)
 
         blur(field('customer', fieldName), withEvent(fieldName, value))
 
@@ -293,14 +296,16 @@ describe('CustomerForm', () => {
         expect(element('.error')).toBeNull()
       })
     }
+
     itInvalidatesFieldWithValue('firstName', ' ', 'First name is required')
     itInvalidatesFieldWithValue('lastName', ' ', 'Last name is required')
     itInvalidatesFieldWithValue('phoneNumber', ' ', 'Phone number is required')
     itInvalidatesFieldWithValue(
       'phoneNumber',
       'invalid',
-      'Only numbers, spaces and ( ) - +'
+      'Only numbers, spaces and these symbols are allowed: ( ) + -'
     )
+
     itClearsFieldError('firstName', 'name')
     itClearsFieldError('lastName', 'name')
     itClearsFieldError('phoneNumber', '1234567890')
@@ -308,12 +313,15 @@ describe('CustomerForm', () => {
     itDoesNotInvalidateFieldOnKeypress('firstName', '')
     itDoesNotInvalidateFieldOnKeypress('lastName', '')
     itDoesNotInvalidateFieldOnKeypress('phoneNumber', '')
+
     it('accepts standard phone number characters when validating', () => {
-      render(<CustomerForm />)
+      render(<CustomerForm {...validCustomer} />)
+
       blur(
         element("[name='phoneNumber']"),
-        withEvent('phoneNumber', '1234567890+()- ')
+        withEvent('phoneNumber', '0123456789+()- ')
       )
+
       expect(element('.error')).toBeNull()
     })
   })

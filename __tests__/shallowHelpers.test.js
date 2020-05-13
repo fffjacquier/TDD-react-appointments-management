@@ -1,12 +1,12 @@
 import React from 'react'
-import { childrenOf, type, createShallowRenderer } from './shallowHelpers'
+import { createShallowRenderer, childrenOf, type } from './shallowHelpers'
 
 describe('childrenOf', () => {
   it('returns no children', () => {
     expect(childrenOf(<div />)).toEqual([])
   })
 
-  it('renders direct children', () => {
+  it('returns direct children', () => {
     expect(
       childrenOf(
         <div>
@@ -25,7 +25,7 @@ describe('childrenOf', () => {
     expect(childrenOf('text')).toEqual([])
   })
 
-  it('renders array of children for elements with one child', () => {
+  it('returns array of children for elements with one child', () => {
     expect(
       childrenOf(
         <div>
@@ -80,7 +80,7 @@ describe('elementsMatching', () => {
     expect(elementsMatching(type('p'))).toEqual([<p>A</p>, <p>B</p>])
   })
 
-  it('finds indirect chidren', () => {
+  it('finds indirect children', () => {
     render(
       <TestComponent>
         <div>

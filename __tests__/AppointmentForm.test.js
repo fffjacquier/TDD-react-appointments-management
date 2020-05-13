@@ -80,7 +80,6 @@ describe('AppointmentForm', () => {
 
     render(<AppointmentForm onSave={saveSpy} customer={customer} />)
     await submit(form('appointment'))
-
     expect(saveSpy).toHaveBeenCalled()
   })
 

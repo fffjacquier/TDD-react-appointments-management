@@ -1,26 +1,26 @@
-export const match = (re, description) => (value) =>
-  !value.match(re) ? description : undefined
+export const required = description => value =>
+  !value || value.trim() === '' ? description : undefined;
 
-export const list = (...validators) => (value) =>
+export const match = (re, description) => value =>
+  !value.match(re) ? description : undefined;
+
+export const list = (...validators) => value =>
   validators.reduce(
     (result, validator) => result || validator(value),
     undefined
-  )
-
-export const required = (description) => (value) =>
-  !value || value.trim() === '' ? description : undefined
+  );
 
 export const validateMany = (validators, fields) =>
   Object.entries(fields).reduce(
     (result, [name, value]) => ({
       ...result,
-      [name]: validators[name](value),
+      [name]: validators[name](value)
     }),
     {}
-  )
-
-export const anyErrors = (errors) =>
-  Object.values(errors).some((error) => error !== undefined)
+  );
 
 export const hasError = (validationErrors, fieldName) =>
-  validationErrors[fieldName] !== undefined
+  validationErrors[fieldName] !== undefined;
+
+export const anyErrors = errors =>
+  Object.values(errors).some(error => error !== undefined);

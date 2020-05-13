@@ -30,18 +30,22 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
       validateSingleField(target.name, target.value)
     }
   }
+
   const validators = {
     firstName: required('First name is required'),
     lastName: required('Last name is required'),
     phoneNumber: list(
       required('Phone number is required'),
-      match(/^[0-9+()\- ]*$/, 'Only numbers, spaces and ( ) - +')
+      match(
+        /^[0-9+()\- ]*$/,
+        'Only numbers, spaces and these symbols are allowed: ( ) + -'
+      )
     ),
   }
 
-  const validateSingleField = (name, value) => {
+  const validateSingleField = (fieldName, fieldValue) => {
     const result = validateMany(validators, {
-      [name]: value,
+      [fieldName]: fieldValue,
     })
     setValidationErrors({ ...validationErrors, ...result })
   }
@@ -123,7 +127,7 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
       {renderError('phoneNumber')}
 
       <input type="submit" value="Add" disabled={submitting} />
-      {submitting && <span className="submittingIndicator" />}
+      {submitting ? <span className="submittingIndicator" /> : null}
     </form>
   )
 }
