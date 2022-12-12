@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graphql": "^15.0.0",
     "morgan": "^1.10.0",
     "raw-loader": "^4.0.1",
